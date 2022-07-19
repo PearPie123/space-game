@@ -1,0 +1,1 @@
+players use rocket ships to collect coins maybe matches but probably just 1 server
