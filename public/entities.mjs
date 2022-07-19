@@ -103,9 +103,9 @@ export class Player extends Ship {
           this.throttle();
           break;
         case "Space":
-          //
+          
       }
-    }
+    }//
     this.rotateToPoint(input.x, input.y);
   }
   update(delta, input) {
