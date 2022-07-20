@@ -1,11 +1,11 @@
 class Entity {
-  constructor(x, y, angle, asset, id) {
+  constructor(x, y, angle, currentAsset, id) {
     this.x = x;
     this.y = y;
     this.velX = 0;
     this.velY = 0;
     this.angle = angle;
-    this.asset = asset;
+    this.currentAsset = currentAsset;
     this.id = id;
     this.collidesWithWall = false;
   }
@@ -16,8 +16,8 @@ class Entity {
 }
 
 export class RectEntity extends Entity {
-  constructor(x, y, width, length, asset, id) {
-    super(x, y, 0, asset, id);
+  constructor(x, y, width, length, currentAsset, id) {
+    super(x, y, 0, currentAsset, id);
     this.width = width;
     this.length = length;
   }
@@ -54,8 +54,8 @@ export class Bullet extends RectEntity {
   }
 }
 export class Ship extends Entity {
-  constructor(x, y, angle, radius, thrust, maxSpeed, asset, id) {
-    super(x, y, angle, asset, id);
+  constructor(x, y, angle, radius, thrust, maxSpeed, idleAsset, thrustAsset, id) {
+    super(x, y, angle, idleAsset, id);
     this.velX = 0.0;
     this.velY = 0.0;
     this.mass = radius * radius * Math.PI;
@@ -64,18 +64,39 @@ export class Ship extends Entity {
     this.maxSpeed = maxSpeed;
     this.dragCoeff = this.thrust / this.maxSpeed; 
     this.collidesWithWall = true;
+    this.usedThrottle = false;
+    this.idleAsset = idleAsset;
+    this.thrustAsset = thrustAsset;
   }
   
   
   throttle() {
+    this.usedThrottle = true;
     this.velX += Math.cos(this.angle * (Math.PI / 180)) * this.thrust;
     this.velY += Math.sin(this.angle * (Math.PI / 180)) * this.thrust; 
   }
+  
+  update() {
+    if(this.usedThrottle) {
+      this.currentAsset = this.thrustAsset;
+    }
+    else {
+      this.currentAsset = this.idleAsset;
+    }
+    this.usedThrottle = false;
+  }
+  
 }
 
+export class Enemy extends Ship {
+  constructor(x, y, angle, radius, thrust, maxSpeed, idleAsset, thrustAsset, id) {
+    super(x, y, angle, radius, thrust, maxSpeed, idleAsset, thrustAsset, id);
+  }
+} 
+
 export class Player extends Ship {
-  constructor(x, y, angle, radius, thrust, maxSpeed, asset, id) {
-   super(x, y, angle, radius, thrust, maxSpeed, asset, id);
+  constructor(x, y, angle, radius, thrust, maxSpeed, idleAsset, thrustAsset, id) {
+   super(x, y, angle, radius, thrust, maxSpeed, idleAsset, thrustAsset, id);
     this.score = 0;
   }
 
@@ -114,5 +135,12 @@ export class Player extends Ship {
     this.velX += dragX;
     this.velY += dragY;
     this.handleInput(delta, input);
+    if(this.usedThrottle) {
+      this.currentAsset = this.thrustAsset;
+    }
+    else {
+      this.currentAsset = this.idleAsset;
+    }
+    this.usedThrottle = false;
   }
 }

@@ -7,7 +7,7 @@ class Game {
     this.idealHeight = 375;
     this.idealWidth = 667;
     this.entityList = [
-      new Player(5, 5, 0, 11, 0.01, 0.75, "blueThruster", "player"),
+      new Player(5, 5, 0, 11, 0.01, 0.75, "blueNoThruster", "blueThruster" , "player"),
       new Ship(50, 50, 0, 11, 0.01, 0.75, "redThruster", "test"),
       new RectEntity(70, 70, 100, 100, "bullet", "test1" )
     ];

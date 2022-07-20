@@ -37,7 +37,7 @@ export class Renderer {
 
   addSprites(entityList) {
     for(const entity of entityList) {
-      const sprite = PIXI.Sprite.from(this.pixiApp.loader.resources[entity.asset].texture);
+      const sprite = PIXI.Sprite.from(this.pixiApp.loader.resources[entity.currentAsset].texture);
       sprite.anchor.set(0.5, 0.5) 
 
       this.spriteReferenceKey[entity.id] = sprite;
@@ -49,6 +49,7 @@ export class Renderer {
   drawFrame(entityList) {
     for(const entity of entityList) {
       const sprite = this.spriteReferenceKey[entity.id];
+      sprite.texture = this.pixiApp.loader.resources[entity.currentAsset].texture;
       sprite.x = entity.x * this.gameScale;
       sprite.y = entity.y * this.gameScale;
       sprite.scale.x = 2 * this.gameScale;
