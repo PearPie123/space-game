@@ -59,25 +59,64 @@ export class CollisionEngine {
     }
   }
 
+  distanceSquared(x1, y1, x2, y2) {
+    return Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2);
+  }
+
+  pointLineDistance(x, y, lx1, ly1, lx2, ly2) {
+    return Math.pow(Math.abs((lx1 - lx2) * (ly1 - y) - (lx1 - x) * (ly1 - ly2)), 2) / this.distanceSquared(lx1, ly1, lx2, ly2);
+  }
+  
   checkRectCircleCollision(circle, rect) {
-    const closestX = Math.abs()
+    const vertexes = rect.corners;
+    const vertexesDistances = [
+      this.distanceSquared(circle.x, circle.y, vertexes.tr.x, vertexes.tr.y),
+      this.distanceSquared(circle.x, circle.y, vertexes.tl.x, vertexes.tl.y),
+      this.distanceSquared(circle.x, circle.y, vertexes.br.x, vertexes.br.y),
+      this.distanceSquared(circle.x, circle.y, vertexes.bl.x, vertexes.bl.y),
+    ];
+    const vertexesIntersect = vertexesDistances.filter(distance => distance < circle.radius * circle.radius).length > 0;
+    return vertexesIntersect;
+    // if(vertexesIntersect) {
+    //   return true;
+    // }
+  
+    // const edgeDistances = [
+    //   this.pointLineDistance(circle.x, circle.y, vertexes.tr.x, vertexes.tr.y, vertexes.tl.x, vertexes.tl.y),
+    //   this.pointLineDistance(circle.x, circle.y, vertexes.bl.x, vertexes.bl.y, vertexes.tl.x, vertexes.tl.y),
+    //   this.pointLineDistance(circle.x, circle.y, vertexes.bl.x, vertexes.bl.y, vertexes.br.x, vertexes.br.y),
+    //   this.pointLineDistance(circle.x, circle.y, vertexes.tr.x, vertexes.tr.y, vertexes.br.x, vertexes.br.y),
+    // ];
+    // const edgesIntersect = edgeDistances.filter(distance => distance < circle.radius).length > 0;
+    // return edgesIntersect;
+    
   }
   
   update(delta, input) {
+    const activeList = this.entityList.filter((entity) => {return entity.collisionActive});
     const checkedEntities = [];
-    for(const entity of this.entityList) {
+    for(const entity of activeList) {
       if(entity.collidesWithWall) { 
         this.checkWallCollision(entity);
       }
-      for(const entity2 of this.entityList) {
+      
+      for(const entity2 of activeList) {
+        if(!entity.collidesWith.includes(entity2.collisionLayer)) {
+          continue;
+        }
         if(entity2.id !== entity.id && !checkedEntities.includes([entity, entity2].sort())) {
-          if(entity2.radius === undefined) {
-            
+          if(entity2.radius === undefined || entity.radius === undefined) {
+            const circle = (entity.radius === undefined)? entity2: entity;
+            const rect = (entity.radius === undefined)? entity: entity2;
+            if(this.checkRectCircleCollision(circle, rect)) {
+              rect.clear();
+              circle.health -= 1;
+            }
+            checkedEntities.push(entity, entity2);
           }
           else {
             this.checkCircleCollision(entity, entity2);
             checkedEntities.push(entity, entity2);
-            //console.log(checkedEntities)
           }
         }
       }

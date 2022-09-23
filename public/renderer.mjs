@@ -38,8 +38,7 @@ export class Renderer {
   addSprites(entityList) {
     for(const entity of entityList) {
       const sprite = PIXI.Sprite.from(this.pixiApp.loader.resources[entity.currentAsset].texture);
-      sprite.anchor.set(0.5, 0.5) 
-
+      sprite.anchor.set(0.5, 0.5); 
       this.spriteReferenceKey[entity.id] = sprite;
       this.pixiApp.stage.addChild(sprite);
     }
@@ -49,12 +48,18 @@ export class Renderer {
   drawFrame(entityList) {
     for(const entity of entityList) {
       const sprite = this.spriteReferenceKey[entity.id];
-      sprite.texture = this.pixiApp.loader.resources[entity.currentAsset].texture;
-      sprite.x = entity.x * this.gameScale;
-      sprite.y = entity.y * this.gameScale;
-      sprite.scale.x = 2 * this.gameScale;
-      sprite.scale.y = 2 * this.gameScale;
-      sprite.angle = entity.angle + 90;
+      if(entity.visible) {
+        sprite.visible = true;
+        sprite.texture = this.pixiApp.loader.resources[entity.currentAsset].texture;
+        sprite.x = entity.x * this.gameScale;
+        sprite.y = entity.y * this.gameScale;
+        sprite.scale.x = entity.scale * 2 * this.gameScale;
+        sprite.scale.y = entity.scale * 2 * this.gameScale;
+        sprite.angle = entity.angle + 90;
+      }
+      else {
+        sprite.visible = false;
+      }
     }
   }
 }
