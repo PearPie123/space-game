@@ -110,7 +110,7 @@ export class BulletPool {
 }
 
 export class Ship extends Entity {
-  constructor(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, bulletCooldown) {
+  constructor(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, bulletCooldown, maxHealth) {
     super(x, y, scale, idleAsset, id, collisionLayer, collidesWith);
     this.radius = radius * scale;
     this.velX = 0.0;
@@ -127,6 +127,7 @@ export class Ship extends Entity {
     this.bulletPool = bulletPool;
     this.lastShot = 0;
     this.bulletCooldown = bulletCooldown;
+    this.maxHealth = maxHealth;
     this.health = 0;
   }
   
@@ -162,8 +163,8 @@ export class Ship extends Entity {
 }
 
 export class Enemy extends Ship {
-  constructor(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, target) {
-    super(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool);
+  constructor(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, target, maxHealth) {
+    super(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, maxHealth);
     this.target = target;
     this.throttleDistance = 300;
     
@@ -181,8 +182,8 @@ export class Enemy extends Ship {
 } 
 
 export class Player extends Ship {
-  constructor(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, bulletCooldown) {
-   super(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, bulletCooldown);
+  constructor(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, bulletCooldown, maxHealth) {
+   super(x, y, scale, radius, thrust, maxSpeed, idleAsset, thrustAsset, id, collisionLayer, collidesWith, bulletVel, bulletPool, bulletCooldown, maxHealth);
   }
 
   handleInput(delta, input) {
@@ -203,6 +204,12 @@ export class Player extends Ship {
     }//
     this.rotateToPoint(input.x, input.y);
   }
+
+  reset() {
+    this.health = this.maxHealth;
+    
+  }
+  
   update(delta, input) {
     this.lastShot += delta;
     const dragX = this.dragCoeff * (-this.velX);

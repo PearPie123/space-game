@@ -35,13 +35,12 @@ export class Renderer {
     this.pixiApp.loader.onComplete.add(completeFunct);
   }
 
-  addSprites(entityList) {
-    for(const entity of entityList) {
-      const sprite = PIXI.Sprite.from(this.pixiApp.loader.resources[entity.currentAsset].texture);
-      sprite.anchor.set(0.5, 0.5); 
-      this.spriteReferenceKey[entity.id] = sprite;
-      this.pixiApp.stage.addChild(sprite);
-    }
+  addSprite(entity) {
+    const sprite = PIXI.Sprite.from(this.pixiApp.loader.resources[entity.currentAsset].texture);
+    sprite.anchor.set(0.5, 0.5); 
+    this.spriteReferenceKey[entity.id] = sprite;
+    this.pixiApp.stage.addChild(sprite);
+
   }
 
   

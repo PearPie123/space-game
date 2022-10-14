@@ -4,6 +4,10 @@ export class CollisionEngine {
     this.arenaBounds = arenaBounds;
   }
 
+  addEntity(entity) {
+    this.entityList.push(entity);
+  }
+
   checkCircleCollision(obj1, obj2) { 
     const distance = Math.pow(Math.pow(obj1.x - obj2.x,2) + Math.pow(obj1.y - obj2.y, 2), 0.5);
     const sumRadius = obj1.radius + obj2.radius;
